@@ -66,11 +66,12 @@ class StockPage extends StatelessWidget {
                   return Container();
                 }),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
+                physics: const NeverScrollableScrollPhysics(),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -79,7 +80,7 @@ class StockPage extends StatelessWidget {
                           onTap: () {
                             context.read<PriceBloc>().add(ChangePeriodEvent(period));
                           },
-                          title: period.toString()),
+                          title: period.getTitle),
                   ],
                 ),
               ),
@@ -101,7 +102,7 @@ class PeriodButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: const BoxDecoration(
           color: Colors.blueGrey,

@@ -68,3 +68,22 @@ enum Period {
   oneYear,
   fiveYear,
 }
+
+extension PeriodStyle on Period {
+  String get getTitle {
+    switch (this) {
+      case Period.oneDay:
+        return "1G";
+      case Period.oneWeek:
+        return "1H";
+      case Period.oneMonth:
+        return "1A";
+      case Period.threeMonth:
+        return "3A";
+      case Period.oneYear:
+        return "1Y";
+      case Period.fiveYear:
+        return "5Y";
+    }
+  }
+}
