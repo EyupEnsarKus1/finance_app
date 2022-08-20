@@ -13,10 +13,8 @@ class Repository {
         "Authorization": "R29vZCBMdWNr",
       },
     );
-    print("bbbbbbbbbbbbbbb" + response.body);
 
-    if (response.statusCode == 200 && response.body != null) {
-      print("aaaaaaaaaaaaaaaaaaaa" + response.body);
+    if (response.statusCode == 200) {
       return PriceModel.fromJson(jsonDecode(response.body));
     } else {
       throw Exception("Api Hatası");
