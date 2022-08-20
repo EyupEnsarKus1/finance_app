@@ -19,75 +19,87 @@ class StockPage extends StatelessWidget {
       create: (context) => PriceBloc(priceService),
       child: Builder(builder: (context) {
         return Scaffold(
-          appBar: AppBar(title: Text("AKBANK"), centerTitle: true),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * .5,
-                child: BlocBuilder<PriceBloc, PriceState>(builder: (context, state) {
-                  if (state is PriceLoading) {
-                    return const CircularProgressIndicator(
-                      strokeWidth: 10,
-                      color: Colors.red,
-                    );
-                  } else if (state is PriceLoaded) {
-                    final List<GraphPoint>? data = state.price!.points![state.period];
-                    print(data);
-                    return LineChart(
-                      LineChartData(
-                        maxY: data!.map((price) => price.price).reduce((curr, nextTime) => curr! >= nextTime! ? curr : nextTime),
-                        minY: data.map((price) => price.price).reduce((curr, nextTime) => curr! <= nextTime! ? curr : nextTime),
-                        titlesData: FlTitlesData(show: false),
-                        borderData: FlBorderData(show: false),
-                        gridData: FlGridData(show: false),
-                        backgroundColor: Colors.grey,
-                        lineBarsData: [
-                          LineChartBarData(
-                            barWidth: 2.0,
-                            dotData: FlDotData(show: false),
-                            color: Colors.greenAccent,
-                            spots: data
-                                .map(
-                                  (e) => FlSpot(
-                                    double.parse(e.dateTime!.millisecondsSinceEpoch.toString()),
-                                    double.parse(e.price!.toStringAsFixed(2)),
-                                  ),
-                                )
-                                .toList(),
+              BlocBuilder<PriceBloc, PriceState>(builder: (context, state) {
+                if (state is PriceLoading) {
+                  return const Align(
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      color: Colors.greenAccent,
+                    ),
+                  );
+                } else if (state is PriceLoaded) {
+                  final List<GraphPoint>? data = state.price!.points![state.period];
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * .5,
+                    child: Center(
+                      child: LineChart(
+                        LineChartData(
+                          maxY: data!.map((price) => price.price).reduce((curr, nextTime) => curr! >= nextTime! ? curr : nextTime),
+                          minY: data.map((price) => price.price).reduce((curr, nextTime) => curr! <= nextTime! ? curr : nextTime),
+                          titlesData: FlTitlesData(
+                            show: false,
                           ),
-                        ],
+                          borderData: FlBorderData(show: false),
+                          gridData: FlGridData(show: false),
+                          lineBarsData: [
+                            LineChartBarData(
+                              isCurved: true,
+                              barWidth: 2.0,
+                              dotData: FlDotData(show: false),
+                              color: Colors.greenAccent,
+                              spots: data
+                                  .map(
+                                    (e) => FlSpot(
+                                      double.parse(e.dateTime!.millisecondsSinceEpoch.toString()),
+                                      double.parse(e.price!.toStringAsFixed(2)),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  } else if (state is PriceError) {
-                    return Text(state.errorMessage);
-                  }
-                  return Container();
-                }),
-              ),
+                    ),
+                  );
+                } else if (state is PriceError) {
+                  return Text(state.errorMessage);
+                }
+                return Container();
+              }),
               const SizedBox(
                 height: 20,
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const NeverScrollableScrollPhysics(),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (final period in Period.values)
-                      PeriodButton(
-                          onTap: () {
-                            context.read<PriceBloc>().add(ChangePeriodEvent(period));
-                          },
-                          title: period.getTitle),
-                  ],
-                ),
-              ),
+              const PeriodButtonsWidget(),
             ],
           ),
         );
       }),
+    );
+  }
+}
+
+class PeriodButtonsWidget extends StatelessWidget {
+  const PeriodButtonsWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (final period in Period.values)
+            PeriodButton(
+                onTap: () {
+                  context.read<PriceBloc>().add(ChangePeriodEvent(period));
+                },
+                title: period.getTitle),
+        ],
+      ),
     );
   }
 }
