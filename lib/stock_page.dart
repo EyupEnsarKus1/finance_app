@@ -22,6 +22,7 @@ class StockPage extends StatelessWidget {
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text("selam"),
               BlocBuilder<PriceBloc, PriceState>(builder: (context, state) {
                 if (state is PriceLoading) {
                   return const Align(
@@ -31,14 +32,19 @@ class StockPage extends StatelessWidget {
                     ),
                   );
                 } else if (state is PriceLoaded) {
-                  final List<GraphPoint>? data = state.price!.points![state.period];
+                  final List<GraphPoint>? data =
+                      state.price!.points![state.period];
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * .5,
                     child: Center(
                       child: LineChart(
                         LineChartData(
-                          maxY: data!.map((price) => price.price).reduce((curr, nextTime) => curr! >= nextTime! ? curr : nextTime),
-                          minY: data.map((price) => price.price).reduce((curr, nextTime) => curr! <= nextTime! ? curr : nextTime),
+                          maxY: data!.map((price) => price.price).reduce(
+                              (curr, nextTime) =>
+                                  curr! >= nextTime! ? curr : nextTime),
+                          minY: data.map((price) => price.price).reduce(
+                              (curr, nextTime) =>
+                                  curr! <= nextTime! ? curr : nextTime),
                           titlesData: FlTitlesData(
                             show: false,
                           ),
@@ -53,7 +59,9 @@ class StockPage extends StatelessWidget {
                               spots: data
                                   .map(
                                     (e) => FlSpot(
-                                      double.parse(e.dateTime!.millisecondsSinceEpoch.toString()),
+                                      double.parse(e
+                                          .dateTime!.millisecondsSinceEpoch
+                                          .toString()),
                                       double.parse(e.price!.toStringAsFixed(2)),
                                     ),
                                   )
@@ -108,7 +116,8 @@ class PeriodButton extends StatelessWidget {
   final VoidCallback? onTap;
   final String title;
 
-  const PeriodButton({Key? key, required this.onTap, required this.title}) : super(key: key);
+  const PeriodButton({Key? key, required this.onTap, required this.title})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -121,7 +130,8 @@ class PeriodButton extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+          style: const TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
         ),
       ),
     );
