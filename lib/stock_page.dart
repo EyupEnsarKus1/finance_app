@@ -23,6 +23,7 @@ class StockPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("selam"),
+              Text("memo"),
               BlocBuilder<PriceBloc, PriceState>(builder: (context, state) {
                 if (state is PriceLoading) {
                   return const Align(
